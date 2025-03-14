@@ -3,15 +3,18 @@ using System.Collections;
 
 public class HoleSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject holePrefab;         // Delik prefabý
-    [SerializeField] private Transform[] spawnPoints;         // Deliklerin spawnlanacaðý noktalar
-    [SerializeField] private float spawnInterval = 5f;          // Spawn aralýðý
-    [SerializeField] private int maxHoles = 5;                  // Ayný anda maksimum delik sayýsý
-    [SerializeField] private WaterRise waterRise;             // Su scriptine referans
+    [SerializeField] private GameObject holePrefab;          // Delik prefabý
+    [SerializeField] private GameObject plugPrefab;          // Týpa prefabý
+    [SerializeField] private Transform[] spawnPoints;        // Deliklerin spawnlanacaðý noktalar
+    [SerializeField] private Transform[] plugSpawnPoints;    // Týpa spawn noktalarý
+    [SerializeField] private float spawnInterval = 5f;       // Spawn aralýðý
+    [SerializeField] private int maxHoles = 5;               // Ayný anda maksimum delik sayýsý
+    [SerializeField] private WaterRise waterRise;            // Su scriptine referans
+    [SerializeField] private PlugManager plugManager;        // PlugManager referansý
 
-    [SerializeField] private int holesPerSpawn = 1;           // Her spawn olayýnda kaç delik oluþturulsun
-    [SerializeField] private float spawnCountIncreaseInterval = 30f; // Bu süreden sonra spawn sayýsý artar
-    [SerializeField] private int maxHolesPerSpawn = 3;          // Spawnlanabilecek maksimum delik sayýsý
+    [SerializeField] private int holesPerSpawn = 1;          // Her spawn olayýnda kaç delik oluþturulacak
+    [SerializeField] private float spawnCountIncreaseInterval = 30f; // Spawn sayýsýnýn artacaðý süre
+    [SerializeField] private int maxHolesPerSpawn = 3;       // Spawnlanabilecek maksimum delik sayýsý
 
     private int currentHoles = 0; // Açýk delik sayýsý
     private float gameTime = 0f;  // Geçen oyun süresi
@@ -32,7 +35,6 @@ public class HoleSpawner : MonoBehaviour
             if (gameTime >= spawnCountIncreaseInterval && holesPerSpawn < maxHolesPerSpawn)
             {
                 holesPerSpawn++;
-                // Ýsteðe baðlý: gameTime'ý sýfýrlayabilirsiniz.
             }
 
             // Belirlenen sayýda delik spawnla
@@ -46,7 +48,7 @@ public class HoleSpawner : MonoBehaviour
 
             gameTime += spawnInterval;
 
-            // Ýsteðe baðlý: Oyun ilerledikçe ayný anda oluþabilecek maksimum delik sayýsýný artýrabilirsiniz.
+            // Oyun ilerledikçe ayný anda oluþabilecek maksimum delik sayýsýný artýrabilirsiniz.
             if (gameTime > 60f && maxHoles < 10)
             {
                 maxHoles++;
@@ -67,8 +69,8 @@ public class HoleSpawner : MonoBehaviour
         {
             do
             {
-                spawnIndex = Random.Range(0, spawnPoints.Length);
-            } while (spawnIndex == lastSpawnIndex);
+                spawnIndex = Random.Range(0, spawnPoints.Length); // Rastgele bir index seç
+            } while (spawnIndex == lastSpawnIndex); // Son spawn noktasý ile ayný olmamasý için kontrol
         }
         else
         {
@@ -84,6 +86,7 @@ public class HoleSpawner : MonoBehaviour
         if (holeScript != null)
         {
             holeScript.SetSpawner(this);
+            holeScript.SetPlugManager(plugManager); // PlugManager referansýný ekledim
         }
 
         currentHoles++;
@@ -91,9 +94,26 @@ public class HoleSpawner : MonoBehaviour
         {
             waterRise.SetHoleCount(currentHoles);
         }
+
+        // Delik oluþtuðunda rastgele bir noktada týpa spawnla
+        SpawnPlug();
     }
 
-    // Delik týklandýðýnda (tamir edildiðinde) çaðrýlýr.
+    void SpawnPlug()
+    {
+        if (plugSpawnPoints == null || plugSpawnPoints.Length == 0)
+        {
+            Debug.LogError("Plug spawn points array is empty! Lütfen spawn noktalarýný atayýn.");
+            return;
+        }
+
+        // Rastgele bir plug spawn noktasý seç
+        int plugSpawnIndex = Random.Range(0, plugSpawnPoints.Length);
+
+        Transform plugSpawnPoint = plugSpawnPoints[plugSpawnIndex];
+        Instantiate(plugPrefab, plugSpawnPoint.position, Quaternion.identity); // Týpayý spawn et
+    }
+
     public void HoleFixed()
     {
         currentHoles = Mathf.Max(0, currentHoles - 1);

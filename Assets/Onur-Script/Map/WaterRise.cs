@@ -26,17 +26,19 @@ public class WaterRise : MonoBehaviour
 
     void Update()
     {
+        // Delik sayýsýna baðlý olarak yükselme hýzý
+        float riseSpeed = baseRiseSpeed + (holeCount * 0.2f);
+
         if (holeCount == 0 && transform.position.y > startY)
         {
-            // Açýk delik yoksa, su belirlediðin lowerSpeed ile orijinal konuma iniyor.
+            // Delik yoksa su aþaðýya insin
             float newY = transform.position.y - lowerSpeed * Time.deltaTime;
             if (newY < startY) newY = startY;
             transform.position = new Vector3(transform.position.x, newY, transform.position.z);
         }
         else if (holeCount > 0 && transform.position.y < maxHeight)
         {
-            // Açýk delik varsa, su yükselir. Hýz, açýk delik sayýsýna göre artar.
-            float riseSpeed = baseRiseSpeed + (holeCount * 0.2f);
+            // Açýk delik varsa, su yükseliyor
             transform.position += new Vector3(0, riseSpeed * Time.deltaTime, 0);
         }
 
@@ -52,7 +54,6 @@ public class WaterRise : MonoBehaviour
         }
     }
 
-    // Diðer scriptlerden çaðrýlarak açýk delik sayýsýný günceller
     public void SetHoleCount(int count)
     {
         holeCount = count;
@@ -60,8 +61,11 @@ public class WaterRise : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("OnTriggerEnter2D tetiklendi, çarpýþan obje: " + collision.gameObject.name);
+
         if (collision.CompareTag(playerTag))
         {
+            Debug.Log("Su oyuncuya deðdi! Menüye dönülüyor...");
             SceneManager.LoadScene("Menu");
         }
     }
