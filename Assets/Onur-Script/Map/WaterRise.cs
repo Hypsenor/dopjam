@@ -4,14 +4,14 @@ using UnityEngine.SceneManagement;
 
 public class WaterRise : MonoBehaviour
 {
-    [SerializeField] private float baseRiseSpeed = 0.5f; // Temel yükselme hýzý
-    [SerializeField] private float lowerSpeed = 0.3f;    // Su alçalma hýzý
-    [SerializeField] private float maxHeight = 10f;        // Su seviyesinin ulaþabileceði maksimum yükseklik
-    [SerializeField] private Slider waterLevelSlider;      // UI slider referansý
-    [SerializeField] private string playerTag = "Player";    // Oyuncu tag'ý
+    [SerializeField] private float baseRiseSpeed = 0.5f; 
+    [SerializeField] private float lowerSpeed = 0.3f;    
+    [SerializeField] private float maxHeight = 10f;   
+    [SerializeField] private Slider waterLevelSlider;      
+    [SerializeField] private string playerTag = "Player";    
 
     private float startY;
-    private int holeCount = 0; // Açýk delik sayýsý
+    private int holeCount = 0; 
 
     void Start()
     {
@@ -26,19 +26,19 @@ public class WaterRise : MonoBehaviour
 
     void Update()
     {
-        // Delik sayýsýna baðlý olarak yükselme hýzý
+        
         float riseSpeed = baseRiseSpeed + (holeCount * 0.2f);
 
         if (holeCount == 0 && transform.position.y > startY)
         {
-            // Delik yoksa su aþaðýya insin
+            
             float newY = transform.position.y - lowerSpeed * Time.deltaTime;
             if (newY < startY) newY = startY;
             transform.position = new Vector3(transform.position.x, newY, transform.position.z);
         }
         else if (holeCount > 0 && transform.position.y < maxHeight)
         {
-            // Açýk delik varsa, su yükseliyor
+            
             transform.position += new Vector3(0, riseSpeed * Time.deltaTime, 0);
         }
 

@@ -70,7 +70,7 @@ public class HoleSpawner : MonoBehaviour
             do
             {
                 spawnIndex = Random.Range(0, spawnPoints.Length); // Rastgele bir index seç
-            } while (spawnIndex == lastSpawnIndex); // Son spawn noktasý ile ayný olmamasý için kontrol
+            } while (spawnIndex == lastSpawnIndex); 
         }
         else
         {
@@ -81,12 +81,12 @@ public class HoleSpawner : MonoBehaviour
         Transform spawnPoint = spawnPoints[spawnIndex];
         GameObject holeObj = Instantiate(holePrefab, spawnPoint.position, Quaternion.identity);
 
-        // Delik prefabýndaki Hole scriptine bu spawner referansýný atýyoruz.
+     
         Hole holeScript = holeObj.GetComponent<Hole>();
         if (holeScript != null)
         {
             holeScript.SetSpawner(this);
-            holeScript.SetPlugManager(plugManager); // PlugManager referansýný ekledim
+            holeScript.SetPlugManager(plugManager); 
         }
 
         currentHoles++;
@@ -111,7 +111,7 @@ public class HoleSpawner : MonoBehaviour
         int plugSpawnIndex = Random.Range(0, plugSpawnPoints.Length);
 
         Transform plugSpawnPoint = plugSpawnPoints[plugSpawnIndex];
-        Instantiate(plugPrefab, plugSpawnPoint.position, Quaternion.identity); // Týpayý spawn et
+        Instantiate(plugPrefab, plugSpawnPoint.position, Quaternion.identity); 
     }
 
     public void HoleFixed()

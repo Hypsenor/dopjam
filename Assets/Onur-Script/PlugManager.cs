@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class PlugManager : MonoBehaviour
 {
-    public int plugCount = 0; // Oyuncunun sahip olduðu týpa sayýsý
-    public Text plugText; // UI'da göstermek için
+    public int plugCount = 0; 
+    public Text plugText;
 
     void Start()
     {
